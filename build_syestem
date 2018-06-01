@@ -1,0 +1,154 @@
+
+day2
+
+Part III. Building the LFS System
+
+change envirment
+
+
+chroot "$LFS" /tools/bin/env -i \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='\u:\w\$ '              \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
+    /tools/bin/bash --login +h
+
+
+6.7. Linux-4.9.9 API Headers
+
+root:/sources# cd man-pages-4.09
+
+6.9.1. Installation of Glibc
+
+
+cp -v /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+
+经验 ：lfs硬盘应该足够大
+
+
+The GCC package contains the GNU compiler collection, which includes the C and C++ compilers.
+
+Approximate build time:
+82 SBU (with tests)
+Required disk space:
+3.3 GB
+
+
+6.18. Bzip2-1.0.6
+6.25. Shadow-4.4
+
+root:/sources/shadow-4.4# passwd root
+Changing password for root
+Enter the new password (minimum of 5 characters)
+Please use a combination of upper and lower case letters and numbers.
+New password: 
+Bad password: too short.  
+Warning: weak password (enter it again to use it anyway).
+New password: 
+Re-enter new password: 
+passwd: password changed.
+都是输入的lfs
+
+6.26. Psmisc-22.21
+6.27. Iana-Etc-2.30
+6.28. M4-1.4.18
+6.30. Flex-2.6.3
+6.31. Grep-3.0
+6.33. Bash-4.4
+6.35. Libtool-2.4.6
+6.36. GDBM-1.12 -
+
+6.40. Perl-5.24.1
+---没有 make test
+
+6.43. Autoconf-2.69
+---没有 make test
+6.44. Automake-1.15
+no test
+
+Chapter 7. System Configuration
+配置网络
+
+
+cd /etc/sysconfig/
+cat > ifconfig.eth0 << "EOF"
+ONBOOT=yes
+IFACE=eth0
+SERVICE=ipv4-static
+IP=192.168.11.139
+GATEWAY=192.168.11.254
+PREFIX=24
+BROADCAST=192.168.11.255
+EOF
+
+
+cat > /etc/resolv.conf << "EOF"
+# Begin /etc/resolv.conf
+
+domain localdomain
+nameserver 192.168.11.254
+
+# End /etc/resolv.conf
+EOF
+
+
+echo "<lfs>" > /etc/hostname
+
+
+cat > /etc/hosts << "EOF"
+# Begin /etc/hosts (network card version)
+
+127.0.0.1 localhost
+
+# End /etc/hosts (network card version)
+EOF
+
+8.2. Creating the /etc/fstab File
+
+cat > /etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system  mount-point  type     options             dump  fsck
+#                                                              order
+
+/dev/sdb1     /            ext4    defaults            1     1
+/dev/sdb2     swap         swap     pri=1               0     0
+proc           /proc        proc     nosuid,noexec,nodev 0     0
+sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
+devpts         /dev/pts     devpts   gid=5,mode=620      0     0
+tmpfs          /run         tmpfs    defaults            0     0
+devtmpfs       /dev         devtmpfs mode=0755,nosuid    0     0
+
+# End /etc/fstab
+EOF
+
+8.4. Using GRUB to Set Up the Boot Process
+
+grub-install /dev/sdb
+
+cat > /boot/grub/grub.cfg << "EOF"
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod ext2
+set root=(hd0,2)
+
+menuentry "GNU/Linux, Linux 4.9.9-lfs-8.0" {
+        linux   /boot/vmlinuz-4.9.9-lfs-8.0 root=/dev/sdb1 ro
+}
+EOF
+
+
+
+cat > /etc/lsb-release << "EOF"
+DISTRIB_ID="Linux From Scratch"
+DISTRIB_RELEASE="8.0"
+DISTRIB_CODENAME="quchaodong"
+DISTRIB_DESCRIPTION="Linux From Scratch"
+EOF
+
+
+/home/chaodongqu/VirtualBox VMs/新编组/node1_ubuntu_lfs/lfs1.vdi
+lfs_bak.vdi 备份盘
